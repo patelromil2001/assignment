@@ -1,14 +1,18 @@
-// scripts/generate-env.js
 const fs = require('fs');
-const targetPath = './src/environments/environment.prod.ts';
+const path = require('path');
+
+const envDir = path.resolve(__dirname, '../src/environments');
+if (!fs.existsSync(envDir)) {
+  fs.mkdirSync(envDir, { recursive: true });
+}
+
+const targetPath = path.join(envDir, 'environment.prod.ts');
 
 const envConfigFile = `export const environment = {
   production: true,
-  SPOTIFY_CLIENT_ID: '${process.env.SPOTIFY_CLIENT_ID || ''}',
-  SPOTIFY_REDIRECT_URI: '${process.env.SPOTIFY_REDIRECT_URI || ''}',
-  SPOTIFY_API_BASE: '${process.env.SPOTIFY_API_BASE || 'https://api.spotify.com/v1'}'
-};
-`;
+  spotifyApiBase: '${process.env.SPOTIFY_API_BASE}',
+  spotifyClientId: '${process.env.SPOTIFY_CLIENT_ID}',
+  spotifyRedirectUri: '${process.env.SPOTIFY_REDIRECT_URI}'
+};`;
 
-fs.writeFileSync(targetPath, envConfigFile, { encoding: 'utf8' });
-console.log('Wrote environment.prod.ts');
+fs.writeFileSync(targetPath, envConfigFile);

@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = "dist/assignment"
+  publish = "dist/assignment/browser"
 
 # Optional: set Node version for Netlify build
 [build.environment]

@@ -15,8 +15,6 @@ testem.log
 /npm-debug.log*
 /yarn-error.log*
 
-# Environment files (often contain secrets)
-src/environments/environment*.ts
 
 # IDEs and editors
 .idea/

@@ -1,0 +1,24 @@
+<h2>🎵 Spotify New Releases</h2>
+
+@if (loading) {
+  <div class="loading">Loading new releases…</div>
+}
+
+@if (error) {
+  <div class="error">{{ error }}</div>
+}
+
+@if (albums.length) {
+  <div class="albums-grid">
+    @for (album of albums; track $index) {
+      <div class="album-card">
+        <img [src]="album.images[0]?.url" [alt]="album.name" />
+        <div class="album-info">
+          <h3>{{ album.name }}</h3>
+          <p>{{ album.artistNames }}</p>
+          <a [href]="album.external_urls.spotify" target="_blank">Listen on Spotify</a>
+        </div>
+      </div>
+    }
+  </div>
+}

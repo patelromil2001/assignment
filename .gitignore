@@ -1,0 +1,52 @@
+# Angular build output
+/dist/
+/out-tsc/
+/.angular/cache/
+
+# Temporary files
+/tmp/
+/coverage/
+/connect.lock
+testem.log
+.sass-cache/
+
+# Node dependencies and logs
+/node_modules/
+/npm-debug.log*
+/yarn-error.log*
+
+# Environment files (often contain secrets)
+src/environments/environment*.ts
+
+# IDEs and editors
+.idea/
+/.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code specific
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# History folder for VS Code extensions or plugins
+.history/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Optional: If you use ngrok or other tunnels, ignore their config files
+.ngrok/
+
+# Optional: if you add local SSL certs for HTTPS dev server
+*.key
+*.crt

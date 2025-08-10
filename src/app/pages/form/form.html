@@ -1,0 +1,56 @@
+<h2>Feedback Form</h2>
+
+<form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" novalidate>
+  <div>
+    <label>Name</label><br>
+    <input formControlName="name" />
+    @if (f.name.touched && f.name.invalid) {
+      <div style="color:red">
+        @if (f.name.errors?.['required']) {
+          <div>Name is required.</div>
+        }
+        @if (f.name.errors?.['minlength']) {
+          <div>Name must be at least 2 characters.</div>
+        }
+      </div>
+    }
+  </div>
+
+  <div style="margin-top:8px;">
+    <label>Email</label><br>
+    <input formControlName="email" />
+    @if (f.email.touched && f.email.invalid) {
+      <div style="color:red">
+        @if (f.email.errors?.['required']) {
+          <div>Email is required.</div>
+        }
+        @if (f.email.errors?.['email']) {
+          <div>Enter a valid email.</div>
+        }
+      </div>
+    }
+  </div>
+
+  <div style="margin-top:8px;">
+    <label>Message</label><br>
+    <textarea formControlName="message" rows="4"></textarea>
+    @if (f.message.touched && f.message.invalid) {
+      <div style="color:red">
+        @if (f.message.errors?.['required']) {
+          <div>Message is required.</div>
+        }
+        @if (f.message.errors?.['minlength']) {
+          <div>Message must be at least 10 characters.</div>
+        }
+      </div>
+    }
+  </div>
+
+  <div style="margin-top:12px;">
+    <button type="submit" [disabled]="submitting">Submit</button>
+  </div>
+</form>
+
+@if (serverMessage) {
+  <div style="margin-top:12px; color:green">{{ serverMessage }}</div>
+}

@@ -1,0 +1,73 @@
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.error {
+  text-align: center;
+  color: red;
+  margin-bottom: 20px;
+}
+
+.albums-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  padding: 0 20px;
+}
+
+.album-card {
+  background: #181818;
+  color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease-in-out;
+}
+
+.album-card:hover {
+  transform: scale(1.05);
+}
+
+.album-card img {
+  width: 100%;
+  display: block;
+}
+
+.album-info {
+  padding: 10px;
+  text-align: center;
+}
+
+.album-info h3 {
+  font-size: 1rem;
+  margin: 5px 0;
+}
+
+.album-info p {
+  font-size: 0.9rem;
+  color: #b3b3b3;
+}
+
+.album-info a {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: #1DB954;
+  color: white;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.album-info a:hover {
+  background: #17a44b;
+}

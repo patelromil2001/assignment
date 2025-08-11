@@ -1,56 +1,32 @@
-<h2>Feedback Form</h2>
+<h2>📝 Trivia Quiz</h2>
 
-<form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" novalidate>
-  <div>
-    <label>Name</label><br>
-    <input formControlName="name" />
-    @if (f.name.touched && f.name.invalid) {
-      <div style="color:red">
-        @if (f.name.errors?.['required']) {
-          <div>Name is required.</div>
-        }
-        @if (f.name.errors?.['minlength']) {
-          <div>Name must be at least 2 characters.</div>
-        }
-      </div>
+@if (quizForm) {
+<form [formGroup]="quizForm" (ngSubmit)="onSubmit()">
+  @for (question of questions; track $index; let i = $index) {
+  <div class="quiz-question">
+    <p [innerHTML]="question.question"></p>
+
+    @for (ans of question.allAnswers; track $index) {
+    <div class="quiz-answer">
+      <input
+        type="radio"
+        [id]="'q' + i + '-' + ans"
+        [value]="ans"
+        [formControlName]="'q' + i"
+        [name]="'q' + i"
+      />
+      <label [for]="'q' + i + '-' + ans" [innerHTML]="ans"></label>
+    </div>
+    } @if (submitted && quizForm.controls['q' + i].invalid) {
+    <div class="error">Please select an answer.</div>
     }
   </div>
+  }
 
-  <div style="margin-top:8px;">
-    <label>Email</label><br>
-    <input formControlName="email" />
-    @if (f.email.touched && f.email.invalid) {
-      <div style="color:red">
-        @if (f.email.errors?.['required']) {
-          <div>Email is required.</div>
-        }
-        @if (f.email.errors?.['email']) {
-          <div>Enter a valid email.</div>
-        }
-      </div>
-    }
-  </div>
-
-  <div style="margin-top:8px;">
-    <label>Message</label><br>
-    <textarea formControlName="message" rows="4"></textarea>
-    @if (f.message.touched && f.message.invalid) {
-      <div style="color:red">
-        @if (f.message.errors?.['required']) {
-          <div>Message is required.</div>
-        }
-        @if (f.message.errors?.['minlength']) {
-          <div>Message must be at least 10 characters.</div>
-        }
-      </div>
-    }
-  </div>
-
-  <div style="margin-top:12px;">
-    <button type="submit" [disabled]="submitting">Submit</button>
-  </div>
+  <button type="submit" [disabled]="quizForm.invalid">Submit Quiz</button>
 </form>
-
-@if (serverMessage) {
-  <div style="margin-top:12px; color:green">{{ serverMessage }}</div>
+} @if (resultMessage) {
+<div class="result">
+  {{ resultMessage }}
+</div>
 }

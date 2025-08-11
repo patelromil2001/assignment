@@ -1,47 +1,29 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
-  private clientId = environment.spotifyClientId;
-  private redirectUri = environment.spotifyRedirectUri;
-  private apiBase = environment.spotifyApiBase;
+export class Api {
+  private triviaApi = 'https://opentdb.com/api.php?amount=9&type=multiple';
 
   constructor(private http: HttpClient) {}
 
-  // --- Form Logic (JSONPlaceholder) ---
-  private baseUrl = 'https://jsonplaceholder.typicode.com';
-  submitFeedback(payload: any) {
-    return this.http.post(`${this.baseUrl}/posts`, payload);
-  }
-
-  /**
-   * Builds the Spotify auth URL for Implicit Grant Flow.
-   */
-  getAuthUrl(): string {
-    const scopes = encodeURIComponent('user-read-private user-read-email');
-    return `https://accounts.spotify.com/authorize?response_type=token&client_id=${this.clientId}&scope=${scopes}&redirect_uri=${encodeURIComponent(this.redirectUri)}`;
-  }
-
-  /**
-   * Gets new album releases from Spotify.
-   * @param token Spotify access token
-   */
-  getNewReleases(token: string): Observable<any> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
-    return this.http.get(`${this.apiBase}/browse/new-releases`, { headers }).pipe(
+  // Fetch 10 multiple choice trivia questions
+  getTriviaQuestions(): Observable<any> {
+    return this.http.get(this.triviaApi).pipe(
       catchError(err => {
-        console.error('Spotify API error', err);
-        // Return an empty albums structure to avoid breaking the UI
-        return of({ albums: { items: [] } });
+        console.error('Trivia API error', err);
+        return of(null);
       })
     );
+  }
+
+  // Simulate form submission, you can replace with your backend
+  submitQuizAnswers(payload: any) {
+    // For demo: just log and return observable success
+    console.log('Quiz submitted:', payload);
+    return of({ success: true, message: 'Thanks for submitting!' });
   }
 }

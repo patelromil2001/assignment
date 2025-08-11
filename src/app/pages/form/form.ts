@@ -1,46 +1,53 @@
-import { Component } from '@angular/core';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ApiService } from '../../services/api';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Api } from '../../services/api';
+import { CommonModule } from '@angular/common'; // Needed for pipes like titlecase
 
 @Component({
   selector: 'app-form',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule], 
   templateUrl: './form.html',
   styleUrls: ['./form.css']
 })
-export class FormComponent {
-  feedbackForm;
-  submitting = false;
-  serverMessage = '';
+export class FormComponent implements OnInit {
+  quizForm!: FormGroup;
+  questions: any[] = [];
+  submitted = false;
+  resultMessage = '';
 
-  constructor(private fb: FormBuilder, private api: ApiService) {
-    this.feedbackForm = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      message: ['', [Validators.required, Validators.minLength(10)]]
+  constructor(private fb: FormBuilder, private api: Api) {}
+
+  ngOnInit() {
+    this.api.getTriviaQuestions().subscribe(data => {
+      if (data && data.results) {
+        this.questions = data.results.slice(0, 5).map((q: any) => ({
+          ...q,
+          allAnswers: [...q.incorrect_answers, q.correct_answer]
+            .sort(() => Math.random() - 0.5)
+        }));
+
+        const group: any = {};
+        this.questions.forEach((_, i) => {
+          group['q' + i] = ['', Validators.required];
+        });
+        this.quizForm = this.fb.group(group);
+      }
     });
   }
 
-  get f() { return this.feedbackForm.controls; }
   onSubmit() {
-    if (this.feedbackForm.invalid) {
-      this.feedbackForm.markAllAsTouched();
-      return;
-    }
+    this.submitted = true;
+    if (this.quizForm.invalid) return;
 
-    this.submitting = true;
-    this.serverMessage = '';
-    this.api.submitFeedback(this.feedbackForm.value).subscribe({
-      next: res => {
-        this.serverMessage = 'Thanks! Your feedback was submitted.';
-        this.feedbackForm.reset();
-        this.submitting = false;
-      },
-      error: err => {
-        this.serverMessage = 'Submission failed — please try again later.';
-        this.submitting = false;
-      }
+    const answers = this.quizForm.value;
+    let correctCount = 0;
+
+    this.questions.forEach((q, i) => {
+      if (answers['q' + i] === q.correct_answer) correctCount++;
     });
+
+    this.resultMessage = `You got ${correctCount} out of ${this.questions.length} correct!`;
+    this.api.submitQuizAnswers(answers).subscribe();
   }
 }

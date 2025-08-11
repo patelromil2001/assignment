@@ -1,49 +1,44 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../services/api';
+import { Api } from '../../services/api';
+import { TitleCasePipe, CommonModule } from '@angular/common'; // ✅ import here
 
 @Component({
   selector: 'app-api-data',
+  standalone: true, // ✅ if using new syntax, this should be true
+  imports: [CommonModule, TitleCasePipe], // ✅ make the pipe available here
   templateUrl: './api-data.html',
   styleUrls: ['./api-data.css']
 })
 export class ApiDataComponent implements OnInit {
-  albums: any[] = [];
+  questions: any[] = [];
   loading = true;
   error: string | null = null;
+  showAnswerIndex: number | null = null;
 
-  constructor(private api: ApiService) {}
+  constructor(private api: Api) {}
 
   ngOnInit() {
-    const token = this.getAccessTokenFromUrl() || localStorage.getItem('spotify_token');
-
-    if (!token) {
-      // No token → redirect to Spotify login
-      window.location.href = this.api.getAuthUrl();
-      return;
-    }
-
-    // Save token for later use
-    localStorage.setItem('spotify_token', token);
-
-    this.api.getNewReleases(token).subscribe({
+    this.api.getTriviaQuestions().subscribe({
       next: (data) => {
-        this.albums =
-          data?.albums?.items?.map((album: any) => ({
-            ...album,
-            artistNames: album.artists.map((a: any) => a.name).join(', ')
-          })) || [];
+        if (data && data.results) {
+          this.questions = data.results.map((q: any) => ({
+            ...q,
+            allAnswers: [...q.incorrect_answers, q.correct_answer]
+              .sort(() => Math.random() - 0.5) // Shuffle
+          }));
+        } else {
+          this.error = 'No questions found';
+        }
         this.loading = false;
       },
       error: () => {
-        this.error = 'Failed to load albums';
+        this.error = 'Failed to load trivia questions';
         this.loading = false;
       }
     });
   }
 
-  private getAccessTokenFromUrl(): string | null {
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    return params.get('access_token');
+  toggleAnswer(index: number) {
+    this.showAnswerIndex = this.showAnswerIndex === index ? null : index;
   }
 }

@@ -1,23 +1,36 @@
-<h2>🎵 Spotify New Releases</h2>
+<h2>🎲 Trivia Questions</h2>
 
 @if (loading) {
-  <div class="loading">Loading new releases…</div>
+  <div class="loading">Loading questions…</div>
 }
 
 @if (error) {
   <div class="error">{{ error }}</div>
 }
 
-@if (albums.length) {
-  <div class="albums-grid">
-    @for (album of albums; track $index) {
-      <div class="album-card">
-        <img [src]="album.images[0]?.url" [alt]="album.name" />
-        <div class="album-info">
-          <h3>{{ album.name }}</h3>
-          <p>{{ album.artistNames }}</p>
-          <a [href]="album.external_urls.spotify" target="_blank">Listen on Spotify</a>
-        </div>
+@if (questions.length > 0) {
+  <div class="questions-grid">
+    @for (question of questions; track $index; let i = $index) {
+      <div class="question-card">
+        <h3 [innerHTML]="question.question"></h3>
+        <p><strong>Category:</strong> {{ question.category }}</p>
+        <p><strong>Difficulty:</strong> {{ question.difficulty | titlecase }}</p>
+
+        <ul class="answers-list">
+          @for (ans of question.allAnswers; track $index) {
+            <li [innerHTML]="ans"></li>
+          }
+        </ul>
+
+        <button (click)="toggleAnswer(i)">
+          {{ showAnswerIndex === i ? 'Hide' : 'Show' }} Answer
+        </button>
+
+        @if (showAnswerIndex === i) {
+          <p class="correct-answer">
+            Correct Answer: <strong [innerHTML]="question.correct_answer"></strong>
+          </p>
+        }
       </div>
     }
   </div>
